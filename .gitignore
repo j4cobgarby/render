@@ -4,4 +4,4 @@
 *.bmp
 
 build
-build/*
+.vscode
