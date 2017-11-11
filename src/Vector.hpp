@@ -7,11 +7,13 @@
 struct vector {
     double x, y, z;
 };
+
 inline vector make_vector(double x, double y, double z) {
     vector tmp;
     tmp.x = x; tmp.y = y; tmp.z = z;
     return tmp;
 }
+
 inline vector vecmul(vector v, double scalar) {
     vector tmp = v;
     tmp.x *= scalar;
@@ -39,6 +41,12 @@ inline void normalise(double *x, double *y, double *z) {
     *x /= length;
     *y /= length;
     *z /= length;
+}
+
+inline vector rot_vec_Y(vector v, double angle) {
+    v.x = v.x * cos(angle) - v.z * sin(angle);
+    v.z = v.x * sin(angle) + v.z * cos(angle);
+    return v;
 }
 
 #endif
