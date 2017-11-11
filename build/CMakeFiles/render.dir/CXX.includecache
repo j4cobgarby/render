@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/j4cobgarby/code/render/src/Main.cpp
+SFML/Graphics.hpp
+-
+cmath
+-
+vector
+-
+limits
+-
+iostream
+-
+
