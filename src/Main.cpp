@@ -11,6 +11,8 @@
 #include "Scene.hpp"
 #include "Render.hpp"
 
+#define SPEED_MULT 4
+
 /*
 
 +Y
@@ -44,21 +46,15 @@ int main() {
     b2.colour = sf::Color::Green;
 
     cam.x = 0; cam.y = 0, cam.z = -10;
-    cam.length = 0.7;
+    cam.length = 0.9;
     cam.w = 1; cam.h = 1;
     cam.res_x = 64; cam.res_y = 64; // Preferably these two values will both be scaled versions of w and h, by a constant scalar
     cam.dir = normalise(make_vector(0, 0, 1)); // MUST be a unit vector
 
     canvas.create(cam.res_x, cam.res_y, sf::Color::Black);
-    
+
     mainscene.cam = cam;
-    mainscene.boxes = std::vector<box> {
-        b, b2
-    };
-
-    render(mainscene, &canvas);
-
-    canvas.saveToFile("../out.png");
+    mainscene.boxes = std::vector<box> {b, b2};
 
     sf::Clock delta_clock;
     while (window.isOpen()) {
@@ -69,10 +65,22 @@ int main() {
             if (ev.type == sf::Event::Closed) window.close();
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) mainscene.cam.z += 2 * delta.asSeconds();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mainscene.cam.z -= 2 * delta.asSeconds();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) mainscene.cam.x -= 2 * delta.asSeconds();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) mainscene.cam.x += 2 * delta.asSeconds();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            mainscene.cam.x += mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
+            mainscene.cam.z += mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+            mainscene.cam.x += -mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
+            mainscene.cam.z += -mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            mainscene.cam.x += -mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
+            mainscene.cam.z +=  mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            mainscene.cam.x +=  mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
+            mainscene.cam.z += -mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
+        }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
             mainscene.cam.dir = normalise(rot_vec_Y(mainscene.cam.dir, -4 * delta.asSeconds()));

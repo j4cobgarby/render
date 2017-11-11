@@ -12,3 +12,5 @@ if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
     target_link_libraries(render ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 endif()
+
+target_link_libraries(render pthread)
