@@ -103,7 +103,7 @@ int main() {
     b2.colour = sf::Color::Green;
 
     cam.x = 5; cam.y = 0, cam.z = -10;
-    cam.length = 1;
+    cam.length = 0.9;
     cam.w = 1; cam.h = 1;
     cam.res_x = 100; cam.res_y = 100; // Preferably these two values will both be scaled versions of w and h, by a constant scalar
     cam.dir = normalise(make_vector(0, 0, 1)); // MUST be a unit vector
@@ -176,10 +176,14 @@ void render(scene s, sf::Image *canvas) {
                     hit = true;
                 }
             }
-            if (hit) canvas->setPixel(x, y, sf::Color(col.r * (10/(dist*3)), 
-                col.g * (20/(dist*3)), 
-                col.b * (20/(dist*3)), 
-                col.a));
+            if (hit) canvas->setPixel(x, y, 
+            sf::Color(
+                col.r * (10/(dist*2)), 
+                col.g * (10/(dist*2)), 
+                col.b * (10/(dist*2)), 
+                col.a
+                )
+            );
         }
     }
 }
