@@ -1,1 +1,0 @@
-/usr/bin/c++  -Wall -Wextra -O3   CMakeFiles/render.dir/Main.cpp.o  -o render /usr/lib/libsfml-graphics.so /usr/lib/libsfml-window.so /usr/lib/libsfml-system.so 

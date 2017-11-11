@@ -72,7 +72,7 @@ struct scene {
 };
 
 bool raytest(ray, box, double*);
-void render(camera, box, sf::Image*);
+void render(scene, sf::Image*);
 
 /*
 
@@ -97,9 +97,9 @@ int main() {
     b.zmin = 0; b.zmax = 2;
     b.colour = sf::Color::Red;
 
-    b2.xmin = 7; b2.xmax = 9;
-    b2.ymin = -1; b2.ymax = 1;
-    b2.zmin = 0; b2.zmax = 2;
+    b2.xmin = 2; b2.xmax = 4;
+    b2.ymin = 0.5; b2.ymax = 2.5;
+    b2.zmin = -3; b2.zmax = -1;
     b2.colour = sf::Color::Green;
 
     cam.x = 5; cam.y = 0, cam.z = -10;
@@ -111,28 +111,33 @@ int main() {
     sf::Image canvas;
     canvas.create(cam.res_x, cam.res_y, sf::Color::Black);
     
-    render(cam, b, &canvas);
-    render(cam, b2, &canvas);
+    scene mainscene;
+    mainscene.cam = cam;
+    mainscene.boxes = std::vector<box> {
+        b, b2
+    };
+
+    render(mainscene, &canvas);
 
     canvas.saveToFile("../out.png");
 }
 
-void render(camera cam, box b, sf::Image *canvas) {
-    double spacing_x = fabs(cam.w / (cam.res_x - 1));
-    double spacing_y = fabs(cam.h / (cam.res_y - 1));
+void render(scene s, sf::Image *canvas) {
+    double spacing_x = fabs(s.cam.w / (s.cam.res_x - 1));
+    double spacing_y = fabs(s.cam.h / (s.cam.res_y - 1));
 
-    vector plane_middle; // The center of the camera plane.
-    vector plane_topleft; // The position of the top-left-hand corner of the camera plane. The ray for the first pixel goes through this point
+    vector plane_middle; // The center of the s.camera plane.
+    vector plane_topleft; // The position of the top-left-hand corner of the s.camera plane. The ray for the first pixel goes through this point
     vector plane_left_dir; // The (normalised) direction left along the plane
     vector plane_down_dir; // The (normalised) direction down along the plane
     vector plane_right_dir;
 
-    plane_middle = make_vector(cam.x + cam.dir.x*cam.length, 
-        cam.y + cam.dir.y*cam.length, 
-        cam.z + cam.dir.z*cam.length);
-    plane_left_dir = make_vector(-cam.dir.z, 0, cam.dir.x);
+    plane_middle = make_vector(s.cam.x + s.cam.dir.x*s.cam.length, 
+        s.cam.y + s.cam.dir.y*s.cam.length, 
+        s.cam.z + s.cam.dir.z*s.cam.length);
+    plane_left_dir = make_vector(-s.cam.dir.z, 0, s.cam.dir.x);
     plane_down_dir = make_vector(0, -1, 0); // it'll always be this
-    plane_right_dir = make_vector(cam.dir.z, 0, -cam.dir.x);
+    plane_right_dir = make_vector(s.cam.dir.z, 0, -s.cam.dir.x);
     //plane_left_dir = plane_right_dir;
     // so..
     // topleft =
@@ -140,33 +145,41 @@ void render(camera cam, box b, sf::Image *canvas) {
     // y = plane_middle.y + plane height / 2
     // z = left_dir.z * (plane width / 2) + plane_middle.z
     plane_topleft = make_vector(
-        plane_left_dir.x * (cam.w / 2) + plane_middle.x,
-        plane_middle.y + (cam.h / 2),
-        plane_left_dir.z * (cam.w / 2) + plane_middle.z
+        plane_left_dir.x * (s.cam.w / 2) + plane_middle.x,
+        plane_middle.y + (s.cam.h / 2),
+        plane_left_dir.z * (s.cam.w / 2) + plane_middle.z
     );
 
-    for (unsigned int y = 0; y < cam.res_y; y++) {
-        for (unsigned int x = 0; x < cam.res_x; x++) {
-            vector passthrough = make_vector(
-                plane_topleft.x + plane_right_dir.x * spacing_x * x,
-                plane_topleft.y + plane_down_dir.y * spacing_y * y,
-                plane_topleft.z + plane_right_dir.z * spacing_x * x
-            );
+    for (unsigned int y = 0; y < s.cam.res_y; y++) {
+        for (unsigned int x = 0; x < s.cam.res_x; x++) {
             vector direction = make_vector(
-                passthrough.x - cam.x,
-                passthrough.y - cam.y,
-                passthrough.z - cam.z
+                (plane_topleft.x + plane_right_dir.x * spacing_x * x) - s.cam.x,
+                (plane_topleft.y + plane_down_dir.y * spacing_y * y) - s.cam.y,
+                (plane_topleft.z + plane_right_dir.z * spacing_x * x) - s.cam.z
             );
             ray r;
-            r.x = cam.x;
-            r.y = cam.y;
-            r.z = cam.z;
+            r.x = s.cam.x;
+            r.y = s.cam.y;
+            r.z = s.cam.z;
             r.dir = normalise(direction);
 
-            double dist;
-            if (raytest(r, b, &dist)) {
-                canvas->setPixel(x, y, b.colour);
+            double dist = std::numeric_limits<double>::infinity();
+            sf::Color col;
+            bool hit;
+            for (size_t i = 0; i < s.boxes.size(); i++) {
+                double tmp_dist;
+                if (raytest(r, s.boxes.at(i), &tmp_dist)) {
+                    if (tmp_dist < dist) {
+                        col = s.boxes.at(i).colour;
+                        dist = tmp_dist;
+                    }
+                    hit = true;
+                }
             }
+            if (hit) canvas->setPixel(x, y, sf::Color(col.r * (10/(dist*3)), 
+                col.g * (20/(dist*3)), 
+                col.b * (20/(dist*3)), 
+                col.a));
         }
     }
 }

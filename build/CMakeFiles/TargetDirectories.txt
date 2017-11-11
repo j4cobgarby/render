@@ -1,3 +1,0 @@
-/home/j4cobgarby/code/render/build/CMakeFiles/rebuild_cache.dir
-/home/j4cobgarby/code/render/build/CMakeFiles/render.dir
-/home/j4cobgarby/code/render/build/CMakeFiles/edit_cache.dir
