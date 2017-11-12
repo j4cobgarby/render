@@ -71,6 +71,7 @@ int main() {
     canvas.create(cam.res_x, cam.res_y, sf::Color::White);
     mainscene.cam = cam;
 
+    mainscene.boxes.push_back(make_box(0, -1, 0, 20*2+2, -3, 20*2+2, sf::Color(0x8c4313ff)));
     for (size_t y = 0; y < 20; y++) {
         for (size_t x = 0; x < 20; x++) {
             if (map[y][x] == 1) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0xa0a0a0ff)));

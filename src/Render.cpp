@@ -52,9 +52,9 @@ void render(scene s, sf::Image *canvas) {
             }
             if (hit) canvas->setPixel(x, y, 
                 sf::Color(
-                    min(col.r * (0.1/abs(dist)) * 10, (double)col.r),
-                    min(col.g * (0.1/abs(dist)) * 10, (double)col.g), 
-                    min(col.b * (0.1/abs(dist)) * 10, (double)col.b), 
+                    min(col.r * (0.02/abs(dist*3)) * 30, (double)col.r),
+                    min(col.g * (0.02/abs(dist*3)) * 30, (double)col.g), 
+                    min(col.b * (0.02/abs(dist*3)) * 30, (double)col.b), 
                     255
                     )
                 );
