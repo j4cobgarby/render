@@ -1,7 +1,2 @@
-# Some output types
-*.png
-*.jpg
-*.bmp
-
 build
 .vscode
