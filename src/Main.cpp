@@ -3,6 +3,7 @@
 #include <vector>
 #include <limits>
 #include <iostream>
+#include <cstdint>
 
 #include "Vector.hpp"
 #include "Camera.hpp"
@@ -17,9 +18,9 @@
 unsigned int map[20][20] {
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1},
+    {1,1,1,1,0,1,1,1,1,1,1,1,2,1,0,0,0,0,0,1},
     {1,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,1},
-    {1,0,0,1,0,1,0,0,0,0,0,1,1,1,0,0,0,0,0,1},
+    {1,0,0,2,0,1,0,0,0,0,0,1,1,1,0,0,0,0,0,1},
     {1,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
     {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
     {1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -63,7 +64,7 @@ int main() {
     srand(time(NULL));
     cam.x = spawn_x*2+1; cam.y = 0, cam.z = spawn_z*2+1;
     cam.length = 0.1;
-    cam.w = 0.1; cam.h = 0.1;
+    cam.w = 0.2; cam.h = 0.2;
     cam.res_x = 64; cam.res_y = 64; // Preferably these two values will both be scaled versions of w and h, by a constant scalar
     cam.dir = normalise(make_vector(1, 0, 0)); // MUST be a unit vector
 
@@ -73,6 +74,7 @@ int main() {
     for (size_t y = 0; y < 20; y++) {
         for (size_t x = 0; x < 20; x++) {
             if (map[y][x] == 1) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0xa0a0a0ff)));
+            if (map[y][x] == 2) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0xbc7c51ff)));
         }
     }
 
