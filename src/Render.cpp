@@ -43,7 +43,7 @@ void render(scene s, sf::Image *canvas) {
             for (size_t i = 0; i < s.boxes.size(); i++) {
                 if (pow(s.boxes.at(i).xmin+1 - s.cam.x, 2) 
                     + pow(s.boxes.at(i).ymin+1 - s.cam.y, 2) 
-                    + pow(s.boxes.at(i).zmin+1 - s.cam.z, 2) > 36 && i != 0) continue;
+                    + pow(s.boxes.at(i).zmin+1 - s.cam.z, 2) > 40 && i != 0) continue;
                 double tmp_dist;
                 if (raytest(r, s.boxes.at(i), &tmp_dist)) {
                     if (tmp_dist < dist) {
@@ -53,14 +53,17 @@ void render(scene s, sf::Image *canvas) {
                     hit = true;
                 }
             }
-            if (hit) canvas->setPixel(x, y, 
+            if (hit) {
+                double scalar = max(-0.3*dist+2.4, 0.0) * (0.2/dist);
+                canvas->setPixel(x, y, 
                 sf::Color(
-                    min(col.r * (0.09/abs(dist)) * 6, (double)col.r),
-                    min(col.g * (0.09/abs(dist)) * 6, (double)col.g), 
-                    min(col.b * (0.09/abs(dist)) * 6, (double)col.b), 
+                    min(col.r * scalar, (double)col.r),
+                    min(col.g * scalar, (double)col.g), 
+                    min(col.b * scalar, (double)col.b),
                     255
                     )
                 );
+            }
             else canvas->setPixel(x, y, sf::Color::Black);
         }
     }
