@@ -16,12 +16,7 @@ void render(scene s, sf::Image *canvas) {
     plane_left_dir = make_vector(-s.cam.dir.z, 0, s.cam.dir.x);
     plane_down_dir = make_vector(0, -1, 0); // it'll always be this
     plane_right_dir = make_vector(s.cam.dir.z, 0, -s.cam.dir.x);
-    //plane_left_dir = plane_right_dir;
-    // so..
-    // topleft =
-    // x = left_dir.x * (plane width / 2) + plane_middle.x
-    // y = plane_middle.y + plane height / 2
-    // z = left_dir.z * (plane width / 2) + plane_middle.z
+    
     plane_topleft = make_vector(
         plane_left_dir.x * (s.cam.w / 2) + plane_middle.x,
         plane_middle.y + (s.cam.h / 2),
