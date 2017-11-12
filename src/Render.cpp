@@ -40,6 +40,7 @@ void render(scene s, sf::Image *canvas) {
             sf::Color col;
             bool hit;
             for (size_t i = 0; i < s.boxes.size(); i++) {
+                if ((int)(s.boxes.at(i).xmin/2) % 2 == 0) continue;
                 double tmp_dist;
                 if (raytest(r, s.boxes.at(i), &tmp_dist)) {
                     if (tmp_dist < dist) {
