@@ -74,7 +74,7 @@ int main() {
     for (size_t y = 0; y < 20; y++) {
         for (size_t x = 0; x < 20; x++) {
             if (map[y][x] == 1) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0xa0a0a0ff)));
-            if (map[y][x] == 2) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0xbc7c51ff)));
+            if (map[y][x] == 2) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0x915b37ff)));
         }
     }
 
