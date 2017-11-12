@@ -23,6 +23,11 @@ void render(scene s, sf::Image *canvas) {
         plane_left_dir.z * (s.cam.w / 2) + plane_middle.z
     );
 
+    ray r;
+    r.x = s.cam.x;
+    r.y = s.cam.y;
+    r.z = s.cam.z;
+
     for (unsigned int y = 0; y < s.cam.res_y; y++) {
         for (unsigned int x = 0; x < s.cam.res_x; x++) {
             vector direction = make_vector(
@@ -30,17 +35,12 @@ void render(scene s, sf::Image *canvas) {
                 (plane_topleft.y + plane_down_dir.y * spacing_y * y) - s.cam.y,
                 (plane_topleft.z + plane_right_dir.z * spacing_x * x) - s.cam.z
             );
-            ray r;
-            r.x = s.cam.x;
-            r.y = s.cam.y;
-            r.z = s.cam.z;
             r.dir = normalise(direction);
 
             double dist = std::numeric_limits<double>::infinity();
             sf::Color col;
-            bool hit;
+            bool hit = false;
             for (size_t i = 0; i < s.boxes.size(); i++) {
-                if ((int)(s.boxes.at(i).xmin/2) % 2 == 0) continue;
                 double tmp_dist;
                 if (raytest(r, s.boxes.at(i), &tmp_dist)) {
                     if (tmp_dist < dist) {
@@ -51,13 +51,14 @@ void render(scene s, sf::Image *canvas) {
                 }
             }
             if (hit) canvas->setPixel(x, y, 
-            sf::Color(
-                col.r * (1/(dist)), 
-                col.g * (1/(dist)), 
-                col.b * (1/(dist)), 
-                col.a
-                )
-            );
+                sf::Color(
+                    min(col.r * (0.1/abs(dist)) * 10, 200.0),
+                    min(col.g * (0.1/abs(dist)) * 10, 200.0), 
+                    min(col.b * (0.1/abs(dist)) * 10, 200.0), 
+                    255
+                    )
+                );
+            else canvas->setPixel(x, y, sf::Color::Black);
         }
     }
 }

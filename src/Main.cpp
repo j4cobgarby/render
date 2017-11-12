@@ -52,7 +52,6 @@ unsigned int spawn_x = 1, spawn_z = 1;
 
 */
 
-box b, b2;
 camera cam;
 scene mainscene;
 
@@ -61,18 +60,19 @@ sf::Texture render_texture;
 sf::RenderWindow window(sf::VideoMode(1000, 1000), "Render");
 
 int main() {
+    srand(time(NULL));
     cam.x = spawn_x*2+1; cam.y = 0, cam.z = spawn_z*2+1;
     cam.length = 0.1;
     cam.w = 0.1; cam.h = 0.1;
     cam.res_x = 64; cam.res_y = 64; // Preferably these two values will both be scaled versions of w and h, by a constant scalar
-    cam.dir = normalise(make_vector(0, 0, 1)); // MUST be a unit vector
+    cam.dir = normalise(make_vector(1, 0, 0)); // MUST be a unit vector
 
     canvas.create(cam.res_x, cam.res_y, sf::Color::White);
     mainscene.cam = cam;
 
     for (size_t y = 0; y < 20; y++) {
         for (size_t x = 0; x < 20; x++) {
-            if (map[y][x] == 1) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color::White));
+            if (map[y][x] == 1) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0xa0a0a0ff)));
         }
     }
 
