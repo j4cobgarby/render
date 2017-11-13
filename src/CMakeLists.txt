@@ -5,7 +5,7 @@ project(render)
 file(GLOB all_src "*.hpp" "*.cpp")
 add_executable(render ${all_src})
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Ofast")
 
 find_package(SFML 2 REQUIRED graphics window system)
 if (SFML_FOUND)

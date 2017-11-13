@@ -43,7 +43,7 @@ void render(scene s, sf::Image *canvas) {
             for (size_t i = 0; i < s.boxes.size(); i++) {
                 if (pow(s.boxes.at(i).xmin+1 - s.cam.x, 2) 
                     + pow(s.boxes.at(i).ymin+1 - s.cam.y, 2) 
-                    + pow(s.boxes.at(i).zmin+1 - s.cam.z, 2) > 40 && i != 0) continue;
+                    + pow(s.boxes.at(i).zmin+1 - s.cam.z, 2) > 64 && i != 0) continue;
                 double tmp_dist;
                 if (raytest(r, s.boxes.at(i), &tmp_dist)) {
                     if (tmp_dist < dist) {
@@ -54,7 +54,7 @@ void render(scene s, sf::Image *canvas) {
                 }
             }
             if (hit) {
-                double scalar = max(-0.3*dist+2.4, 0.0) * (0.2/dist);
+                double scalar = 3 * max(-0.08*abs(dist*3)+2.4, 0.0) * (0.2/abs(dist*3));
                 canvas->setPixel(x, y, 
                 sf::Color(
                     min(col.r * scalar, (double)col.r),
