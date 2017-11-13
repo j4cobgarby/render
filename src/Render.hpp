@@ -12,6 +12,6 @@ using std::min;
 using std::max;
 
 bool raytest(ray, box, double*);
-void render(scene, sf::Image*);
+void render(scene, sf::Image*, sf::Time);
 
 #endif

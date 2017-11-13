@@ -1,6 +1,6 @@
 #include "Render.hpp"
 
-void render(scene s, sf::Image *canvas) {
+void render(scene s, sf::Image *canvas, sf::Time delta) {
     double spacing_x = fabs(s.cam.w / (s.cam.res_x - 1));
     double spacing_y = fabs(s.cam.h / (s.cam.res_y - 1));
 
@@ -14,7 +14,7 @@ void render(scene s, sf::Image *canvas) {
         s.cam.y + s.cam.dir.y*s.cam.length, 
         s.cam.z + s.cam.dir.z*s.cam.length);
     plane_left_dir = make_vector(-s.cam.dir.z, 0, s.cam.dir.x);
-    plane_down_dir = make_vector(0, -1, 0); // it'll always be this
+    plane_down_dir = make_vector(0, -1, 0);
     plane_right_dir = make_vector(s.cam.dir.z, 0, -s.cam.dir.x);
     
     plane_topleft = make_vector(
@@ -54,7 +54,7 @@ void render(scene s, sf::Image *canvas) {
                 }
             }
             if (hit) {
-                double scalar = 3 * max(-0.08*abs(dist*3)+2.4, 0.0) * (0.2/abs(dist*3));
+                double scalar = max(0.6/(float)abs(dist)-0.1, 0.0);
                 canvas->setPixel(x, y, 
                 sf::Color(
                     min(col.r * scalar, (double)col.r),

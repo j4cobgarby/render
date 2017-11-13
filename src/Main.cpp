@@ -12,8 +12,8 @@
 #include "Scene.hpp"
 #include "Render.hpp"
 
-#define SPEED_MULT 4
-#define ROT_MULT 4
+#define SPEED_MULT 1.5
+#define ROT_MULT 2
 #define MAP_WIDTH 20
 #define MAP_HEIGHT 20
 
@@ -73,7 +73,7 @@ int main() {
     canvas.create(cam.res_x, cam.res_y, sf::Color::White);
     mainscene.cam = cam;
 
-    mainscene.boxes.push_back(make_box(0, -1, 0, (MAP_WIDTH-1)*2+2, -3, (MAP_HEIGHT-1)*2+2, sf::Color(0x8c4313ff)));
+    mainscene.boxes.push_back(make_box(0, -1, 0, (MAP_WIDTH-1)*2+2, -3, (MAP_HEIGHT-1)*2+2, sf::Color(0xaf3434ff)));
     for (size_t y = 0; y < MAP_HEIGHT; y++) {
         for (size_t x = 0; x < MAP_WIDTH; x++) {
             if (map[y][x] == 1) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0xa0a0a0ff)));
@@ -84,6 +84,7 @@ int main() {
     render_texture.loadFromImage(canvas);
 
     sf::Clock delta_clock;
+    sf::Clock global_clock;
     while (window.isOpen()) {
         sf::Time delta = delta_clock.restart();
         window.setTitle("FPS: " + std::to_string(1/delta.asSeconds()));
@@ -115,7 +116,7 @@ int main() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
             mainscene.cam.dir = normalise(rot_vec_Y(mainscene.cam.dir,  ROT_MULT * delta.asSeconds()));
     
-        render(mainscene, &canvas);
+        render(mainscene, &canvas, global_clock.getElapsedTime());
         render_texture.update(canvas);
         sf::RectangleShape rect(sf::Vector2f(1000, 1000));
         rect.setPosition(sf::Vector2f(0, 0));
