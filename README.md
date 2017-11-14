@@ -1,6 +1,6 @@
 # My first renderer!
 
-![](screen3.png)
+![](screenshot_01.png)
 
 ## What it does
 
