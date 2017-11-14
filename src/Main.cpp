@@ -11,11 +11,12 @@
 #include "Ray.hpp"
 #include "Scene.hpp"
 #include "Render.hpp"
+#include "Collisions.hpp"
 
-#define SPEED_MULT 1.5
+#define SPEED_MULT 3
 #define ROT_MULT 2
 #define MAP_WIDTH 20
-#define MAP_HEIGHT 20
+#define MAP_HEIGHT 10
 
 unsigned int map[MAP_HEIGHT][MAP_WIDTH] {
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -24,19 +25,9 @@ unsigned int map[MAP_HEIGHT][MAP_WIDTH] {
     {1,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,1,0,0,1},
     {1,0,0,2,0,1,0,1,0,0,0,1,1,1,0,0,1,0,0,1},
     {1,0,1,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,1},
-    {1,0,0,0,0,1,0,1,0,1,0,1,0,1,1,1,1,0,0,1},
-    {1,0,1,1,1,1,0,1,0,1,0,1,0,1,1,1,0,0,0,1},
-    {1,0,1,0,0,0,0,1,0,1,0,0,0,1,1,1,0,0,0,1},
-    {1,0,1,0,0,0,0,0,0,1,1,0,0,1,1,1,0,0,0,1},
-    {1,0,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1,0,1,1},
-    {1,0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,0,1,1},
-    {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,1},
-    {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,1,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1},
-    {1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,0,0,1,1},
-    {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1},
+    {1,0,0,0,0,1,0,0,0,1,0,1,0,1,1,0,1,0,0,1},
+    {1,0,1,1,1,1,0,1,0,1,0,1,0,0,1,0,0,0,0,1},
+    {1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 };
 unsigned int spawn_x = 1, spawn_z = 1;
@@ -94,27 +85,31 @@ int main() {
             if (ev.type == sf::Event::Closed) window.close();
         }
 
+        double delta_x = 0, delta_z = 0;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            mainscene.cam.x += mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
-            mainscene.cam.z += mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
+            delta_x += mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
+            delta_z += mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            mainscene.cam.x += -mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
-            mainscene.cam.z += -mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
+            delta_x -= mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
+            delta_z -= mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            mainscene.cam.x += -mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
-            mainscene.cam.z +=  mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
+            delta_x -= mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
+            delta_z += mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            mainscene.cam.x +=  mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
-            mainscene.cam.z += -mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
+            delta_x += mainscene.cam.dir.z * SPEED_MULT * delta.asSeconds();
+            delta_z -= mainscene.cam.dir.x * SPEED_MULT * delta.asSeconds();
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
             mainscene.cam.dir = normalise(rot_vec_Y(mainscene.cam.dir, -ROT_MULT * delta.asSeconds()));
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
             mainscene.cam.dir = normalise(rot_vec_Y(mainscene.cam.dir,  ROT_MULT * delta.asSeconds()));
+
+        if (!will_camera_collide(&mainscene, delta_x, 0)) mainscene.cam.x += delta_x;
+        if (!will_camera_collide(&mainscene, 0, delta_z)) mainscene.cam.z += delta_z;
     
         render(mainscene, &canvas, global_clock.getElapsedTime());
         render_texture.update(canvas);
