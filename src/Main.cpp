@@ -18,6 +18,19 @@
 #define MAP_WIDTH 20
 #define MAP_HEIGHT 10
 
+const char map_as_chars[MAP_HEIGHT][MAP_WIDTH+1] {
+    "WWWWW###############",
+    "W   W    #  #  #  ##",
+    "W   W              #",
+    "WW WWWW  #  #  #  ##",
+    "W     W            #",
+    "W     W  #  #  #  ##",
+    "W     W            #",
+    "W           #  #  ##",
+    "W     W            #",
+    "WWWWWWW#############",
+};
+
 unsigned int map[MAP_HEIGHT][MAP_WIDTH] {
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -58,7 +71,7 @@ int main() {
     cam.x = spawn_x*2+1; cam.y = 0, cam.z = spawn_z*2+1;
     cam.length = 0.1;
     cam.w = 0.2; cam.h = 0.2;
-    cam.res_x = 60; cam.res_y = 60; // Preferably these two values will both be scaled versions of w and h, by a constant scalar
+    cam.res_x = 64; cam.res_y = 64; // Preferably these two values will both be scaled versions of w and h, by a constant scalar
     cam.dir = normalise(make_vector(1, 0, 0)); // MUST be a unit vector
 
     canvas.create(cam.res_x, cam.res_y, sf::Color::White);
@@ -67,8 +80,8 @@ int main() {
     mainscene.boxes.push_back(make_box(0, -1, 0, (MAP_WIDTH-1)*2+2, -3, (MAP_HEIGHT-1)*2+2, sf::Color(0xaf3434ff)));
     for (size_t y = 0; y < MAP_HEIGHT; y++) {
         for (size_t x = 0; x < MAP_WIDTH; x++) {
-            if (map[y][x] == 1) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0xa0a0a0ff)));
-            if (map[y][x] == 2) mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0x915b37ff)));
+            if (map_as_chars[y][x] == '#') mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0xa0a0a0ff)));
+            if (map_as_chars[y][x] == 'W') mainscene.boxes.push_back(make_box(x*2, -1, y*2, x*2+2, 1, y*2+2, sf::Color(0x915b37ff)));
         }
     }
 

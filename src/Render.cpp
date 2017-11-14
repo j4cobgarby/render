@@ -1,6 +1,6 @@
 #include "Render.hpp"
 
-void render(scene s, sf::Image *canvas, sf::Time delta) {
+void render(scene s, sf::Image *canvas, sf::Time t) {
     double spacing_x = fabs(s.cam.w / (s.cam.res_x - 1));
     double spacing_y = fabs(s.cam.h / (s.cam.res_y - 1));
 
@@ -28,6 +28,8 @@ void render(scene s, sf::Image *canvas, sf::Time delta) {
     r.y = s.cam.y;
     r.z = s.cam.z;
 
+    const double light_distance = -0.06 + (sin(t.asSeconds())/30);
+
     for (unsigned int y = 0; y < s.cam.res_y; y++) {
         for (unsigned int x = 0; x < s.cam.res_x; x++) {
             vector direction = make_vector(
@@ -43,7 +45,8 @@ void render(scene s, sf::Image *canvas, sf::Time delta) {
             for (size_t i = 0; i < s.boxes.size(); i++) {
                 if (pow(s.boxes.at(i).xmin+1 - s.cam.x, 2) 
                     + pow(s.boxes.at(i).ymin+1 - s.cam.y, 2) 
-                    + pow(s.boxes.at(i).zmin+1 - s.cam.z, 2) > 64 && i != 0) continue;
+                    + pow(s.boxes.at(i).zmin+1 - s.cam.z, 2) > 144
+                    && i != 0) continue;
                 double tmp_dist;
                 if (raytest(r, s.boxes.at(i), &tmp_dist)) {
                     if (tmp_dist < dist) {
@@ -54,7 +57,7 @@ void render(scene s, sf::Image *canvas, sf::Time delta) {
                 }
             }
             if (hit) {
-                double scalar = max(0.6/(float)abs(dist)-0.1, 0.0);
+                double scalar = max(1.2/(float)abs(dist)+light_distance, 0.0);
                 canvas->setPixel(x, y, 
                 sf::Color(
                     min(col.r * scalar, (double)col.r),
